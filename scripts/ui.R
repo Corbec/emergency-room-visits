@@ -5,7 +5,7 @@ library(shiny)
 shinyUI(fluidPage(
 
     # Application title
-    titlePanel(""),
+    titlePanel("Emergency Department Healthcare Spending in US 2006 - 2016"),
 
     # Sidebar 
     sidebarLayout(
