@@ -213,4 +213,55 @@ pop_all <- bind_rows(tibbleList)
 #saving to RDS
 
 saveRDS(pop_all, file = '../data/cleaned_census.rds')
+
+
+
+
+# function for combining age buckets under 5 in ed data
+ed_visits <- read_csv("../data/ED_spending/IHME_DEX_ED_SPENDING_2006_2016_DATA_Y2021M09D23.CSV")
+
+census <- read_rds("../data/cleaned_census.rds")
+
+ed_clean <- function(date){
+  male_under_5 <-  ed_visits %>% 
+    filter(sex == "Male" & (age_group_id == 5 | age_group_id == 28)) %>% 
+    mutate(age_group_name = "under_5")
   
+  male_age_20_24 <- aggregate(.~ sex + age_group, data = male_age_20_24, sum)
+}
+
+ed_visits <- ed_visits %>% 
+  filter(age_group_id != 28) %>% 
+  mutate(age_group_name = ifelse(age_group_name == "1 to 4", "Under 5", age_group_name)) %>% 
+  mutate(age_group_name = ifelse(age_group_name == "85 plus", "85 and over", age_group_name))
+
+ed_visits %>% 
+  select(starts_with("mean_"))
+
+
+colnames(ed_visits[ , grepl( "mean" , names( ed_visits))])
+
+ed_visits %>% 
+  filter(age_group_name == "All Ages")
+
+pop_all <- pop_all %>% 
+  mutate(sex = replace_na(sex, "Both")) %>% 
+  mutate(age_group = replace_na(age_group, "All Ages"))
+
+saveRDS(census, file = '../data/cleaned_census.rds')
+
+census <- census %>% 
+  rename(age_group_name = age_group) %>% 
+  rename(year_id = year)
+
+  ed_visits <- merge(ed_visits,
+        census)
+  
+# ed_visits <- ed_visits %>% 
+#   mutate(mean_all = mean_all / estimate)
+# 
+# ed_visits <- ed_visits %>% 
+#   mutate(mean_all = lower_all / estimate)
+
+ed_visits <- ed_visits %>% 
+  mutate_at(vars(-c(estimate, year_id, age_group_name, sex, age_group_id, sex_id, agg_cause)), funs(. / estimate))
