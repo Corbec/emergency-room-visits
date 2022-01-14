@@ -170,13 +170,7 @@ census_cleaned <- function(date){
                               male_age_60_64$estimate)) %>% 
     mutate(age_group = replace(age_group,
                                ((age_group == "60 and 61 years" | age_group == "62 to 64 years") & sex == "Male"),
-                               male_age_60_64$age_group)) %>% 
-    mutate(estimate = replace(estimate,
-                              ((age_group == "60 and 61 years" | age_group == "62 to 64 years") & sex == "MFem"),
-                              female_age_60_64$estimate)) %>% 
-    mutate(age_group = replace(age_group,
-                               ((age_group == "60 and 61 years" | age_group == "62 to 64 years") & sex == "Fem"),
-                               female_age_60_64$age_group)) %>% 
+                               male_age_60_64$age_group)) %>%
     mutate(estimate = replace(estimate,
                               ((age_group == "65 and 66 years" | age_group == "67 to 69 years") & sex == "Male"),
                               male_age_65_69$estimate)) %>% 
@@ -188,14 +182,35 @@ census_cleaned <- function(date){
                               female_age_65_69$estimate)) %>% 
     mutate(age_group = replace(age_group,
                                ((age_group == "65 and 66 years" | age_group == "67 to 69 years") & sex == "Female"),
-                               female_age_65_69$age_group))
+                               female_age_65_69$age_group)) %>% 
+    mutate(estimate = replace(estimate,
+                              ((age_group == "60 and 61 years" | age_group == "62 to 64 years") & sex == "Female"),
+                              female_age_60_64$estimate)) %>% 
+    mutate(age_group = replace(age_group,
+                               ((age_group == "60 and 61 years" | age_group == "62 to 64 years") & sex == "Female"),
+                               female_age_60_64$age_group))
   
   population <- population %>% 
     distinct()
   
   population <- population %>% 
-    mutate(age_group = str_remove(population$age_group, "years")) %>% 
+    mutate(age_group = str_remove(population$age_group, " years")) %>% 
     mutate(year = date)
+  
+  both <- population %>% 
+    group_by(age_group) %>% 
+    filter(!is.na(sex)) %>% 
+    summarise(sum(estimate))
+  
+  both <- both %>% 
+    mutate(year = date) %>% 
+    mutate(sex = "Both")
+  
+  both <- both %>% 
+    rename(estimate = `sum(estimate)`)
+  
+  population <- population %>% 
+    rbind(both)
 }
 
 #Loop to pull all years census data
@@ -254,7 +269,10 @@ census <- census %>%
   rename(age_group_name = age_group) %>% 
   rename(year_id = year)
 
-  ed_visits <- merge(ed_visits,
+census <- census %>% 
+  mutate(age_group_name = str_trim(age_group_name, side = "right"))
+
+  ed_visits <- left_join(ed_visits,
         census)
   
 # ed_visits <- ed_visits %>% 
@@ -265,3 +283,8 @@ census <- census %>%
 
 ed_visits <- ed_visits %>% 
   mutate_at(vars(-c(estimate, year_id, age_group_name, sex, age_group_id, sex_id, agg_cause)), funs(. / estimate))
+
+all_groups <- unique(as.character(census$age_group_name))
+
+
+

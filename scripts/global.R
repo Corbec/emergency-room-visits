@@ -2,7 +2,9 @@ library(tidyverse)
 library(tidycensus)
 library(jsonlite)
 library(plotly)
+library(shinythemes)
 
+options(scipen = 100)
 
 # read in the data
 
@@ -15,19 +17,22 @@ census <- read_rds("../data/cleaned_census.rds")
 ed_visits <- ed_visits %>% 
   filter(age_group_id != 28) %>% 
   mutate(age_group_name = ifelse(age_group_name == "1 to 4", "Under 5", age_group_name)) %>% 
-  mutate(age_group_name = ifelse(age_group_name == "85 plus", "85 and over", age_group_name))
+  mutate(age_group_name = ifelse(age_group_name == "85 plus", "85  and over", age_group_name))
 
 # merging census and ed_visit data to allow for normalization
 
-# census <- census %>% 
-#   rename(age_group_name = age_group) %>% 
-#   rename(year_id = year)
-# 
-# ed_visits <- merge(ed_visits,
-#                    census)
-# 
-# ed_visits <- ed_visits %>% 
-#   mutate_at(vars(-c(estimate, year_id, age_group_name, sex, age_group_id, sex_id, agg_cause)), funs(. / estimate))
+census <- census %>%
+  rename(age_group_name = age_group) %>%
+  rename(year_id = year)
+
+census <- census %>%
+  mutate(age_group_name = str_trim(age_group_name, side = "right"))
+
+ed_visits <- left_join(ed_visits,
+                       census)
+
+ed_visits <- ed_visits %>%
+  mutate_at(vars(-c(estimate, year_id, age_group_name, sex, age_group_id, sex_id, agg_cause)), funs(. / estimate))
 
 # min and max years in ed_visits for slider filter
 

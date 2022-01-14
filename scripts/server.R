@@ -34,5 +34,11 @@ shinyServer(function(input, output) {
       geom_line()
     ggplotly(p)
   })
+  
+  output$column <- renderPlot({
+    age_visits() %>%
+      ggplot(aes_string(x = "sex", y = input$spending))+
+      geom_col()
+  })
 })
   

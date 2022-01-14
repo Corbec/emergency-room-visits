@@ -61,3 +61,11 @@ pop_2006 <- get_acs(geography = "us",
                     show_call = TRUE)
 
 pop_2006 <- left_join(pop_2006, v2006, by = c("variable" = "name"))
+
+
+ed_visits %>% 
+  filter(agg_cause == 'Communicable and nutrition disorders') %>% 
+  filter(sex == "Both") %>% 
+  ggplot(aes(x = age_group_name, y = mean_all)) +
+  geom_col() +
+  coord_flip()
