@@ -17,7 +17,7 @@ census <- read_rds("../data/cleaned_census.rds")
 ed_visits <- ed_visits %>% 
   filter(age_group_id != 28) %>% 
   mutate(age_group_name = ifelse(age_group_name == "1 to 4", "Under 5", age_group_name)) %>% 
-  mutate(age_group_name = ifelse(age_group_name == "85 plus", "85  and over", age_group_name))
+  mutate(age_group_name = ifelse(age_group_name == "85 plus", "85 and over", age_group_name))
 
 # merging census and ed_visit data to allow for normalization
 
@@ -54,3 +54,6 @@ spending_choices <- colnames(ed_visits[ , grepl( "mean" , names( ed_visits))])
 # getting choices for age range selector
 
 age_items <- unique(as.character(ed_visits$age_group_name))
+
+# getting a list of years for drop down
+year_items <- unique(as.character(ed_visits$year_id))
