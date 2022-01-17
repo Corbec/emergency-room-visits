@@ -57,6 +57,8 @@ shinyUI(fluidPage(
                    width = 12 
                  ),
                  
+                 br(),
+                 
                  fluidRow(
                    plotlyOutput("line"),
                    width = 12 

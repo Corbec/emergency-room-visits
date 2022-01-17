@@ -3,6 +3,7 @@ library(tidycensus)
 library(jsonlite)
 library(plotly)
 library(shinythemes)
+library(viridis)
 
 options(scipen = 100)
 

@@ -63,17 +63,7 @@ pop_2006 <- get_acs(geography = "us",
 pop_2006 <- left_join(pop_2006, v2006, by = c("variable" = "name"))
 
 
-age_range <- unique(as.character(ed_visits$age_group_name))
 
-
-
-ed_visits %>% 
-  filter(agg_cause == 'Communicable and nutrition disorders') %>% 
-  filter(sex == "Both") %>% 
-  factor(ed_visits$age_group_name, levels = age_range) %>% 
-  ggplot(aes(x = age_group_name, y = mean_all)) +
-  geom_col() +
-  coord_flip()
 
 total_spending <- read_csv("../data/global_spending/IHME_HEALTH_SPENDING_1995_2018_Y2021M09D22.CSV")
 
@@ -97,3 +87,34 @@ ed_visits %>%
 ed_visits %>% 
   filter(year_id == 2016) %>% 
   summarise(sum(mean_all))
+
+
+year_visits <- ed_visits %>% 
+  filter((year_id == 2006 | year_id == 2008) &
+           agg_cause == 'Communicable and nutrition disorders' &
+           (sex == "Both" | sex == "Male") &
+           age_group_name != "All Ages")
+
+year_visits %>%
+  ggplot(aes_string(x = "age_group_name", y = "mean_all", fill = "year_id")) +
+  geom_col(position = position_dodge()) +
+  coord_flip() +
+  theme(legend.position = "none") +
+  scale_fill_hue(c=60, l=40) +
+  ylab("USD Spent Per Capita") +
+  xlab(FALSE) +
+  ggtitle(paste(2006," ", 2008))
+
+age_range <- as.vector(unique(as.character(ed_visits$age_group_name)))
+
+year_visits$age_group_name <- factor(year_visits$age_group_name, levels = year_visits$age_group_name)
+
+year_visits %>% 
+  ggplot(aes(x = age_group_name, y = mean_all)) +
+  geom_col() +
+  coord_flip()
+
+year_visits <- within(year_visits, 
+                   age_group_name <- factor(age_group_name, 
+                                      levels=names(sort(table(age_group_name), 
+                                                        decreasing=TRUE))))

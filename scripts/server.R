@@ -62,10 +62,14 @@ shinyServer(function(input, output) {
     p <- sex_visits() %>%
       ggplot(aes(x = year_id)) +
       geom_line(aes_string(y = input$spending), color = "red") +
-      # geom_line(aes_string(y = str_replace(input$spending, "mean", "upper")), color = "blue") +
-      # geom_line(aes_string(y = str_replace(input$spending, "mean", "lower")), color = "orange")
       geom_ribbon(aes_string(ymin = str_replace(input$spending, "mean", "lower"),
-                  ymax = str_replace(input$spending, "mean", "upper"), alpha=0.1))
+                  ymax = str_replace(input$spending, "mean", "upper")),
+                  alpha=0.3,
+                  fill = "darkorange") +
+      ggtitle(paste("Per Capita ER Spending: ", input$year[1], " to ", input$year[2])) +
+      xlab(FALSE) +
+      ylab("USD") +
+      theme(plot.title = element_text(hjust = 0.5))
     ggplotly(p)
   })
   
@@ -76,7 +80,12 @@ shinyServer(function(input, output) {
       ggplot(aes_string(x = "sex", y = input$spending, fill = "sex")) +
       geom_bar(stat = "summary",
                fun = "mean") +
-      theme(legend.position = "none")
+      theme(legend.position = "none") +
+      ggtitle(paste("Per Capita ER Spending By Sex: ", input$year[1], " to ", input$year[2])) +
+      xlab(FALSE) +
+      ylab("USD") +
+      theme(plot.title = element_text(hjust = 0.5)) +
+      scale_fill_brewer(palette = "Dark2")
     ggplotly(p)
   })
   
@@ -88,10 +97,10 @@ shinyServer(function(input, output) {
       geom_col() +
       coord_flip() +
       theme(legend.position = "none") +
-      scale_fill_hue(c=60, l=40) +
-      ylab("USD Spent Per Capita") +
+      ylab(paste("USD Spent Per Capita: ", input$sex1)) +
       xlab(FALSE) +
-      ggtitle(paste(input$condition1," ", input$year1))
+      ggtitle(paste(input$condition1," ", input$year1)) +
+      scale_fill_viridis(discrete = TRUE)
     ggplotly(p)
   })
   
@@ -103,10 +112,10 @@ shinyServer(function(input, output) {
       geom_col() +
       coord_flip() +
       theme(legend.position = "none") +
-      scale_fill_hue(c=60, l=40) +
-     ylab("USD Spent Per Capita") +
+     ylab(paste("USD Spent Per Capita: ", input$sex2)) +
      xlab(FALSE) +
-     ggtitle(paste(input$condition2," ", input$year2))
+     ggtitle(paste(input$condition2," ", input$year2)) +
+     scale_fill_viridis(discrete = TRUE)
    ggplotly(p)
   })
   
@@ -119,7 +128,7 @@ shinyServer(function(input, output) {
                fun = "mean") +
       coord_flip() +
       theme(legend.position = "none") +
-      ylab("USD Spent Per Capita") +
+      ylab(paste("USD Spent Per Capita: ", input$sex1)) +
       xlab(FALSE) +
       ggtitle(paste("Spending By Condition: ", input$year1))
     ggplotly(p)
@@ -134,7 +143,7 @@ shinyServer(function(input, output) {
                fun = "mean") +
       coord_flip() +
       theme(legend.position = "none") +
-      ylab("USD Spent Per Capita") +
+      ylab(paste("USD Spent Per Capita: ", input$sex2)) +
       xlab(FALSE) +
       ggtitle(paste("Spending By Condition: ", input$year2))
     ggplotly(p)
