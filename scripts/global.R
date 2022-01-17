@@ -42,10 +42,18 @@ ed_visits <- left_join(ed_visits,
 ed_visits <- ed_visits %>%
   mutate_at(vars(-c(estimate, year_id, age_group_name, sex, agg_cause)), funs(. / estimate))
 
+# getting choices for sex radio buttons
+
+sex_items <- unique(as.character(ed_visits$sex))
+
+# getting choices for age range selector
+
+age_items <- unique(as.character(ed_visits$age_group_name))
+
 # adding in rows for all conditions
 
 for (s in sex_items){
-  for (a in age_range){
+  for (a in age_items){
     for (i in 2006:2016){
       new_row <- ed_visits %>% 
         filter(sex == s & age_group_name == a & year_id == i) %>% 
@@ -82,17 +90,9 @@ max_year <- max(ed_visits$year_id)
 
 condition_items <- unique(as.character(ed_visits$agg_cause))
 
-# getting choices for sex radio buttons
-
-sex_items <- unique(as.character(ed_visits$sex))
-
 # getting choices for spending selector
 
 spending_choices <- colnames(ed_visits[ , grepl( "mean" , names( ed_visits))])
-
-# getting choices for age range selector
-
-age_items <- unique(as.character(ed_visits$age_group_name))
 
 # getting a list of years for drop down
 year_items <- unique(as.character(ed_visits$year_id))
