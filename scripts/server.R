@@ -62,8 +62,10 @@ shinyServer(function(input, output) {
     p <- sex_visits() %>%
       ggplot(aes(x = year_id)) +
       geom_line(aes_string(y = input$spending), color = "red") +
-      geom_line(aes_string(y = str_replace(input$spending, "mean", "upper")), color = "blue") +
-      geom_line(aes_string(y = str_replace(input$spending, "mean", "lower")), color = "orange")
+      # geom_line(aes_string(y = str_replace(input$spending, "mean", "upper")), color = "blue") +
+      # geom_line(aes_string(y = str_replace(input$spending, "mean", "lower")), color = "orange")
+      geom_ribbon(aes_string(ymin = str_replace(input$spending, "mean", "lower"),
+                  ymax = str_replace(input$spending, "mean", "upper"), alpha=0.1))
     ggplotly(p)
   })
   
@@ -86,7 +88,10 @@ shinyServer(function(input, output) {
       geom_col() +
       coord_flip() +
       theme(legend.position = "none") +
-      scale_fill_hue(c=60, l=40)
+      scale_fill_hue(c=60, l=40) +
+      ylab("USD Spent Per Capita") +
+      xlab(FALSE) +
+      ggtitle(paste(input$condition1," ", input$year1))
     ggplotly(p)
   })
   
@@ -98,7 +103,10 @@ shinyServer(function(input, output) {
       geom_col() +
       coord_flip() +
       theme(legend.position = "none") +
-      scale_fill_hue(c=60, l=40)
+      scale_fill_hue(c=60, l=40) +
+     ylab("USD Spent Per Capita") +
+     xlab(FALSE) +
+     ggtitle(paste(input$condition2," ", input$year2))
    ggplotly(p)
   })
   
@@ -110,7 +118,10 @@ shinyServer(function(input, output) {
       geom_bar(stat = "summary",
                fun = "mean") +
       coord_flip() +
-      theme(legend.position = "none")
+      theme(legend.position = "none") +
+      ylab("USD Spent Per Capita") +
+      xlab(FALSE) +
+      ggtitle(paste("Spending By Condition: ", input$year1))
     ggplotly(p)
   })
   
@@ -122,7 +133,10 @@ shinyServer(function(input, output) {
       geom_bar(stat = "summary",
                fun = "mean") +
       coord_flip() +
-      theme(legend.position = "none")
+      theme(legend.position = "none") +
+      ylab("USD Spent Per Capita") +
+      xlab(FALSE) +
+      ggtitle(paste("Spending By Condition: ", input$year2))
     ggplotly(p)
   })
 })

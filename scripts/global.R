@@ -12,6 +12,8 @@ ed_visits <- read_csv("../data/ED_spending/IHME_DEX_ED_SPENDING_2006_2016_DATA_Y
 
 census <- read_rds("../data/cleaned_census.rds")
 
+total_spending <- read_csv("../data/global_spending/IHME_HEALTH_SPENDING_1995_2018_Y2021M09D22.CSV")
+
 # modify ed_visits to drop rows for under 1 years and rename age groups (may fix this later if I have time)
 
 ed_visits <- ed_visits %>% 

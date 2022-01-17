@@ -125,12 +125,16 @@ shinyUI(fluidPage(
                mainPanel(
                  column(
                    plotlyOutput("year1ages"),
+                   br(),
+                   br(),
                    plotlyOutput("year1conditions"),
                    width = 6
                  ),
                  
                  column(
                    plotlyOutput("year2ages"),
+                   br(),
+                   br(),
                    plotlyOutput("year2conditions"),
                    width = 6
                  )

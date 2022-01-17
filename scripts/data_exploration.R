@@ -75,4 +75,25 @@ ed_visits %>%
   geom_col() +
   coord_flip()
 
+total_spending <- read_csv("../data/global_spending/IHME_HEALTH_SPENDING_1995_2018_Y2021M09D22.CSV")
 
+total_spending <- total_spending %>% 
+  filter(iso3 == "USA" & year >= 2006)
+
+total_spending %>%
+  ggplot(aes(x = year)) +
+  geom_line(aes_string(y = "the_per_cap_mean"), color = "red") +
+  geom_ribbon(aes_string(ymin = "the_per_cap_lower",
+                         ymax = "the_per_cap_upper", alpha=0.1))
+
+total_spending %>% 
+  filter(year >= 2006) %>% 
+  summarise(max(the_per_cap_mean) - min(the_per_cap_mean))
+
+ed_visits %>% 
+  filter(year_id == 2006) %>% 
+  summarise(sum(mean_all))
+
+ed_visits %>% 
+  filter(year_id == 2016) %>% 
+  summarise(sum(mean_all))
