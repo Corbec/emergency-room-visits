@@ -24,7 +24,8 @@ shinyUI(fluidPage(
                  
                  selectInput("condition",
                              "Select condition:",
-                             choices = condition_items
+                             choices = condition_items,
+                             selected = "All Conditions"
                  ),
                  
                  

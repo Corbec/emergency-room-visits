@@ -22,6 +22,11 @@ ed_visits <- ed_visits %>%
   mutate(age_group_name = ifelse(age_group_name == "1 to 4", "Under 5", age_group_name)) %>% 
   mutate(age_group_name = ifelse(age_group_name == "85 plus", "85 and over", age_group_name))
 
+# dropping age_group_id and sex_id
+
+ed_visits <- ed_visits %>% 
+  select(-c(age_group_id, sex_id))
+
 # merging census and ed_visit data to allow for normalization
 
 census <- census %>%
@@ -35,7 +40,38 @@ ed_visits <- left_join(ed_visits,
                        census)
 
 ed_visits <- ed_visits %>%
-  mutate_at(vars(-c(estimate, year_id, age_group_name, sex, age_group_id, sex_id, agg_cause)), funs(. / estimate))
+  mutate_at(vars(-c(estimate, year_id, age_group_name, sex, agg_cause)), funs(. / estimate))
+
+# adding in rows for all conditions
+
+for (s in sex_items){
+  for (a in age_range){
+    for (i in 2006:2016){
+      new_row <- ed_visits %>% 
+        filter(sex == s & age_group_name == a & year_id == i) %>% 
+        summarise_at(vars(-c(estimate, year_id, age_group_name, sex, agg_cause)), sum)
+      
+      ed_visits <- ed_visits %>% 
+        add_row(year_id = i,
+                age_group_name = a,
+                sex = s,
+                agg_cause = "All Conditions",
+                mean_all = new_row$mean_all,
+                lower_all = new_row$lower_all,
+                upper_all = new_row$upper_all,
+                mean_pub = new_row$mean_pub,
+                lower_pub = new_row$lower_pub,
+                upper_pub = new_row$upper_pub,
+                mean_pri = new_row$mean_pri,
+                lower_pri = new_row$lower_pri,
+                upper_pri = new_row$upper_pri,
+                mean_oop = new_row$mean_oop,
+                lower_oop = new_row$lower_oop,
+                upper_oop = new_row$upper_oop,
+                estimate = 0)
+    }
+  }
+}
 
 # min and max years in ed_visits for slider filter
 

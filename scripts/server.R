@@ -123,6 +123,7 @@ shinyServer(function(input, output) {
   
   output$year1conditions <- renderPlotly({
     p <- year1_sex() %>%
+      filter(agg_cause != "All Conditions") %>% 
       ggplot(aes_string(x = "agg_cause", y = input$spending1, fill = "agg_cause")) +
       geom_bar(stat = "summary",
                fun = "mean") +
@@ -138,6 +139,7 @@ shinyServer(function(input, output) {
   
   output$year2conditions <- renderPlotly({
     p <- year2_sex() %>%
+      filter(agg_cause != "All Conditions") %>% 
       ggplot(aes_string(x = "agg_cause", y = input$spending2, fill = "agg_cause")) +
       geom_bar(stat = "summary",
                fun = "mean") +

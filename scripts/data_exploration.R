@@ -74,7 +74,7 @@ total_spending %>%
   ggplot(aes(x = year)) +
   geom_line(aes_string(y = "the_per_cap_mean"), color = "red") +
   geom_ribbon(aes_string(ymin = "the_per_cap_lower",
-                         ymax = "the_per_cap_upper", alpha=0.1))
+                         ymax = "the_per_cap_upper"), alpha=0.1)
 
 total_spending %>% 
   filter(year >= 2006) %>% 
@@ -85,7 +85,7 @@ ed_visits %>%
   summarise(sum(mean_all))
 
 ed_visits %>% 
-  filter(year_id == 2016) %>% 
+  filter(year_id == 2016 & age_group_name == "All Ages" & sex == "Both") %>% 
   summarise(sum(mean_all))
 
 
