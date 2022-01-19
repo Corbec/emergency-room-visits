@@ -84,12 +84,14 @@ shinyUI(fluidPage(
                  
                  selectInput("condition1",
                              "Select condition for left plot:",
-                             choices = condition_items
+                             choices = condition_items,
+                             selected = "All Conditions"
                  ),
                  
                  selectInput("condition2",
                              "Select condition for right plot:",
-                             choices = condition_items
+                             choices = condition_items,
+                             selected = "All Conditions"
                  ),
                  
                  
@@ -103,7 +105,7 @@ shinyUI(fluidPage(
                  ),
                  
                  selectInput("spending2",
-                             "Select spending type for left plot:",
+                             "Select spending type for right plot:",
                              choices = c("All Payers" = "mean_all",
                                          "Public Insurance" = "mean_pub",
                                          "Private Insurance" = "mean_pri",

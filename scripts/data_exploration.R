@@ -97,13 +97,13 @@ year_visits <- ed_visits %>%
 
 year_visits %>%
   ggplot(aes_string(x = "age_group_name", y = "mean_all", fill = "year_id")) +
-  geom_col(position = position_dodge()) +
-  coord_flip() +
-  theme(legend.position = "none") +
-  scale_fill_hue(c=60, l=40) +
-  ylab("USD Spent Per Capita") +
-  xlab(FALSE) +
-  ggtitle(paste(2006," ", 2008))
+  geom_col(position = "stack") +
+   coord_flip() 
+  # theme(legend.position = "none") +
+  # scale_fill_hue(c=60, l=40) +
+  # ylab("USD Spent Per Capita") +
+  # xlab(FALSE) +
+  # ggtitle(paste(2006," ", 2008))
 
 age_range <- as.vector(unique(as.character(ed_visits$age_group_name)))
 
@@ -118,3 +118,19 @@ year_visits <- within(year_visits,
                    age_group_name <- factor(age_group_name, 
                                       levels=names(sort(table(age_group_name), 
                                                         decreasing=TRUE))))
+
+year_visits <- ed_visits %>% 
+  filter((year_id == 2006 & year_id == 2008) &
+           agg_cause == 'Communicable and nutrition disorders' &
+           sex == "Male" &
+           age_group_name != "All Ages")
+
+
+year_visits %>%
+  ggplot(aes_string(x = "age_group_name", y = "mean_all", fill = "year_id")) +
+  geom_col(stat="identity", position = "dodge") +
+  coord_flip() +
+  theme(legend.position = "none") +
+  ylab("USD Spent Per Capita: ") +
+  xlab(FALSE)
+

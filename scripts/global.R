@@ -4,6 +4,8 @@ library(jsonlite)
 library(plotly)
 library(shinythemes)
 library(viridis)
+library(RColorBrewer)
+library("wesanderson")
 
 options(scipen = 100)
 
@@ -39,9 +41,6 @@ census <- census %>%
 ed_visits <- left_join(ed_visits,
                        census)
 
-ed_visits <- ed_visits %>%
-  mutate_at(vars(-c(estimate, year_id, age_group_name, sex, agg_cause)), funs(. / estimate))
-
 # getting choices for sex radio buttons
 
 sex_items <- unique(as.character(ed_visits$sex))
@@ -58,6 +57,10 @@ for (s in sex_items){
       new_row <- ed_visits %>% 
         filter(sex == s & age_group_name == a & year_id == i) %>% 
         summarise_at(vars(-c(estimate, year_id, age_group_name, sex, agg_cause)), sum)
+      
+      pop <- census %>% 
+        filter(year_id == i & sex == s & age_group_name == a) %>% 
+        select(estimate)
       
       ed_visits <- ed_visits %>% 
         add_row(year_id = i,
@@ -76,10 +79,16 @@ for (s in sex_items){
                 mean_oop = new_row$mean_oop,
                 lower_oop = new_row$lower_oop,
                 upper_oop = new_row$upper_oop,
-                estimate = 0)
+                estimate = pop$estimate)
     }
   }
 }
+
+
+# calculating per capita spending
+
+ed_visits <- ed_visits %>%
+  mutate_at(vars(-c(estimate, year_id, age_group_name, sex, agg_cause)), funs(. / estimate))
 
 # min and max years in ed_visits for slider filter
 
@@ -96,3 +105,9 @@ spending_choices <- colnames(ed_visits[ , grepl( "mean" , names( ed_visits))])
 
 # getting a list of years for drop down
 year_items <- unique(as.character(ed_visits$year_id))
+
+# extending color palette for age group plots
+age_group_colors <- colorRampPalette(wes_palette("Zissou1")) (19)
+
+# extending color palette for condition groups
+condition_group_colors <- colorRampPalette(wes_palette("FantasticFox1")) (15)

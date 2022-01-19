@@ -85,7 +85,7 @@ shinyServer(function(input, output) {
       xlab(FALSE) +
       ylab("USD") +
       theme(plot.title = element_text(hjust = 0.5)) +
-      scale_fill_brewer(palette = "Dark2")
+      scale_fill_manual(values = wes_palette("GrandBudapest1"))
     ggplotly(p)
   })
   
@@ -100,7 +100,7 @@ shinyServer(function(input, output) {
       ylab(paste("USD Spent Per Capita: ", input$sex1)) +
       xlab(FALSE) +
       ggtitle(paste(input$condition1," ", input$year1)) +
-      scale_fill_viridis(discrete = TRUE)
+      scale_fill_manual(values = age_group_colors)
     ggplotly(p)
   })
   
@@ -115,7 +115,7 @@ shinyServer(function(input, output) {
      ylab(paste("USD Spent Per Capita: ", input$sex2)) +
      xlab(FALSE) +
      ggtitle(paste(input$condition2," ", input$year2)) +
-     scale_fill_viridis(discrete = TRUE)
+     scale_fill_manual(values = age_group_colors)
    ggplotly(p)
   })
   
@@ -131,7 +131,8 @@ shinyServer(function(input, output) {
       theme(legend.position = "none") +
       ylab(paste("USD Spent Per Capita: ", input$sex1)) +
       xlab(FALSE) +
-      ggtitle(paste("Spending By Condition: ", input$year1))
+      ggtitle(paste("Spending By Condition: ", input$year1)) +
+      scale_fill_manual(values = condition_group_colors)
     ggplotly(p)
   })
   
@@ -147,7 +148,8 @@ shinyServer(function(input, output) {
       theme(legend.position = "none") +
       ylab(paste("USD Spent Per Capita: ", input$sex2)) +
       xlab(FALSE) +
-      ggtitle(paste("Spending By Condition: ", input$year2))
+      ggtitle(paste("Spending By Condition: ", input$year2)) +
+      scale_fill_manual(values = condition_group_colors)
     ggplotly(p)
   })
 })

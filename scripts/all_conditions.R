@@ -82,6 +82,10 @@ for (s in sex_items){
         filter(sex == s & age_group_name == a & year_id == i) %>% 
         summarise_at(vars(-c(estimate, year_id, age_group_name, sex, agg_cause)), sum)
       
+      pop <- census %>% 
+        filter(year_id == i & sex == s & age_group_name == a) %>% 
+        select(estimate)
+      
       ed_visits <- ed_visits %>% 
         add_row(year_id = i,
                 age_group_name = a,
@@ -99,7 +103,12 @@ for (s in sex_items){
                 mean_oop = new_row$mean_oop,
                 lower_oop = new_row$lower_oop,
                 upper_oop = new_row$upper_oop,
-                estimate = 0)
+                estimate = pop$estimate)
     }
   }
 }
+
+
+pop <- census %>% 
+  filter(year_id == 2006 & sex == "Male" & age_group_name == "Under 5") %>% 
+  select(estimate)
