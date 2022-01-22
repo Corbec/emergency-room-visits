@@ -19,7 +19,10 @@ shinyUI(fluidPage(
                              "Select a range of years:",
                              min = min_year,
                              max = max_year,
-                             value = c(min_year, max_year)),
+                             value = c(min_year, max_year),
+                             sep = NULL,
+                             ticks = FALSE
+                ),
                  
                  
                  selectInput("condition",
@@ -54,7 +57,7 @@ shinyUI(fluidPage(
                
                mainPanel(
                  fluidRow(
-                   plotlyOutput("column"),
+                   plotlyOutput("total"),
                    width = 12 
                  ),
                  
@@ -73,30 +76,30 @@ shinyUI(fluidPage(
                sidebarPanel(
                  
                  selectInput("year1",
-                             "Select year for left plot:",
+                             "Select first year for comparison:",
                              choices = year_items
                  ),
                  
                  selectInput("year2",
-                             "Select year for right plot:",
+                             "Select second year for comparison:",
                              choices = year_items
                  ),
                  
                  selectInput("condition1",
-                             "Select condition for left plot:",
+                             "Select first condition for comparison:",
                              choices = condition_items,
                              selected = "All Conditions"
                  ),
                  
                  selectInput("condition2",
-                             "Select condition for right plot:",
+                             "Select second condition for comparison:",
                              choices = condition_items,
                              selected = "All Conditions"
                  ),
                  
                  
                  selectInput("spending1",
-                             "Select spending type for left plot:",
+                             "Select first spending type for comparison:",
                              choices = c("All Payers" = "mean_all",
                                          "Public Insurance" = "mean_pub",
                                          "Private Insurance" = "mean_pri",
@@ -105,7 +108,7 @@ shinyUI(fluidPage(
                  ),
                  
                  selectInput("spending2",
-                             "Select spending type for right plot:",
+                             "Select second spending type for comparison:",
                              choices = c("All Payers" = "mean_all",
                                          "Public Insurance" = "mean_pub",
                                          "Private Insurance" = "mean_pri",
@@ -115,33 +118,29 @@ shinyUI(fluidPage(
                  
                  
                  radioButtons("sex1",
-                              "Select sex for left plot:",
+                              "Select first sex for comparison:",
                               choices = sex_items,
                               selected = "Both"),
                  
                  
                  radioButtons("sex2",
-                              "Select sex for right plot:",
+                              "Select second sex for comparison:",
                               choices = sex_items,
                               selected = "Both"),
                  width = 3
                ),
                
                mainPanel(
-                 column(
+                 fluidRow(
                    plotlyOutput("year1ages"),
-                   br(),
-                   br(),
-                   plotlyOutput("year1conditions"),
-                   width = 6
+                   width = 12
                  ),
                  
-                 column(
-                   plotlyOutput("year2ages"),
-                   br(),
-                   br(),
-                   plotlyOutput("year2conditions"),
-                   width = 6
+                 br(),
+                 
+                 fluidRow(
+                   plotlyOutput("year1conditions"),
+                   width = 12
                  )
                  
                )

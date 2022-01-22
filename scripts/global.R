@@ -17,6 +17,25 @@ census <- read_rds("../data/cleaned_census.rds")
 
 total_spending <- read_csv("../data/global_spending/IHME_HEALTH_SPENDING_1995_2018_Y2021M09D22.CSV")
 
+total_spending <- total_spending %>% 
+  filter(iso3 == "USA" & year >= 2006) %>% 
+  select(year, the_per_cap_mean, the_per_cap_lower, the_per_cap_upper,
+         ghes_per_cap_mean, ghes_per_cap_lower, ghes_per_cap_upper,
+         ppp_per_cap_mean, ppp_per_cap_lower, ppp_per_cap_upper,
+         oop_per_cap_mean, oop_per_cap_lower, oop_per_cap_upper) %>% 
+  rename(mean_all = the_per_cap_mean,
+         lower_all = the_per_cap_lower,
+         upper_all = the_per_cap_upper,
+         mean_pub = ghes_per_cap_mean,
+         lower_pub = ghes_per_cap_lower,
+         upper_pub = ghes_per_cap_upper,
+         mean_pri = ppp_per_cap_mean,
+         lower_pri = ppp_per_cap_lower,
+         upper_pri = ppp_per_cap_upper,
+         mean_oop = oop_per_cap_mean,
+         lower_oop = oop_per_cap_lower,
+         upper_oop = oop_per_cap_upper)
+
 # modify ed_visits to drop rows for under 1 years and rename age groups (may fix this later if I have time)
 
 ed_visits <- ed_visits %>% 
@@ -107,7 +126,7 @@ spending_choices <- colnames(ed_visits[ , grepl( "mean" , names( ed_visits))])
 year_items <- unique(as.character(ed_visits$year_id))
 
 # extending color palette for age group plots
-age_group_colors <- colorRampPalette(wes_palette("Zissou1")) (19)
+age_group_colors <- colorRampPalette(wes_palette("Zissou1")) (40)
 
 # extending color palette for condition groups
 condition_group_colors <- colorRampPalette(wes_palette("FantasticFox1")) (15)

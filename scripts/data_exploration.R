@@ -1,6 +1,7 @@
 library(tidyverse)
 library(tidycensus)
 library(jsonlite)
+library(reshape2)
 
 options(scipen = 100)
 
@@ -119,18 +120,53 @@ year_visits <- within(year_visits,
                                       levels=names(sort(table(age_group_name), 
                                                         decreasing=TRUE))))
 
-year_visits <- ed_visits %>% 
-  filter((year_id == 2006 & year_id == 2008) &
+year_visits1 <- ed_visits %>% 
+  filter(year_id == 2006 &
            agg_cause == 'Communicable and nutrition disorders' &
            sex == "Male" &
-           age_group_name != "All Ages")
+           age_group_name != "All Ages") %>% 
+  select(year_id, age_group_name, sex, agg_cause, mean_all) %>% 
+  mutate(variables = "2006, Male, All Spending") %>% 
+  rename(spending = mean_all)
+
+year_visits2 <- ed_visits %>% 
+  filter(year_id == 2006 &
+           agg_cause == "Communicable and nutrition disorders" &
+           sex == "Female" &
+           age_group_name != "All Ages") %>% 
+  select(year_id, age_group_name, sex, agg_cause, mean_pub) %>% 
+  mutate(variables = "2006, Female, Public Insurance") %>% 
+  rename(spending = mean_pub)
+
+year_visits <- year_visits1 %>% 
+  rbind(year_visits2)
 
 
 year_visits %>%
-  ggplot(aes_string(x = "age_group_name", y = "mean_all", fill = "year_id")) +
-  geom_col(stat="identity", position = "dodge") +
+  ggplot(aes_string(x = "age_group_name", y = "spending", fill = "variables")) +
+  geom_col(position = position_dodge2()) +
   coord_flip() +
-  theme(legend.position = "none") +
+  #theme(legend.position = "none") +
   ylab("USD Spent Per Capita: ") +
-  xlab(FALSE)
+  xlab(FALSE) +
+  scale_fill_manual(values = wes_palette("Zissou1")) +
+  scale_x_discrete(limits = rev(c("Under 5", "5 to 9", "10 to 14", "15 to 19", "20 to 24",
+                              "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49",
+                              "50 to 54", "55 to 59", "60 to 64", "65 to 69", "70 to 74",
+                              "75 to 79", "80 to 84", "85 and over", "All Ages")))
 
+year1_visits <- {
+  
+  year_visits1 %>% 
+    mutate(tib = "tib1")
+  
+  year_visits2 %>% 
+    mutate(tib = "tib2")
+  
+  year1_visits %>% 
+    rbind(year_visits2)
+  
+}
+
+
+year_visits <- melt(year_visits)
