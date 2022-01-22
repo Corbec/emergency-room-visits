@@ -11,11 +11,11 @@ options(scipen = 100)
 
 # read in the data
 
-ed_visits <- read_csv("../data/ED_spending/IHME_DEX_ED_SPENDING_2006_2016_DATA_Y2021M09D23.CSV")
+ed_visits <- read_csv("IHME_DEX_ED_SPENDING_2006_2016_DATA_Y2021M09D23.CSV")
 
-census <- read_rds("../data/cleaned_census.rds")
+census <- read_rds("cleaned_census.rds")
 
-total_spending <- read_csv("../data/global_spending/IHME_HEALTH_SPENDING_1995_2018_Y2021M09D22.CSV")
+total_spending <- read_csv("IHME_HEALTH_SPENDING_1995_2018_Y2021M09D22.CSV")
 
 total_spending <- total_spending %>% 
   filter(iso3 == "USA" & year >= 2006) %>% 

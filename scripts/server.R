@@ -124,7 +124,7 @@ shinyServer(function(input, output) {
     ggplotly(p)
   })
   
-  # building a bar plot for first tab to show mean spending by sex
+  # building a bar plot for first tab to show mean spending by sex - decided not to use
   
   output$column <- renderPlotly({
     p <- age_visits() %>%
@@ -151,10 +151,9 @@ shinyServer(function(input, output) {
   
   output$year1ages <- renderPlotly({
     p <- age_plot() %>%
+      #filter(age_group_name != "All Ages") %>% 
       ggplot(aes_string(x = "age_group_name", y = "spending", fill = "variables")) +
-      geom_bar(stat = "summary",
-               fun = "mean",
-               position = position_dodge2()) +
+      geom_col(position = position_dodge2()) +
       coord_flip() +
       ylab(paste("USD Spent Per Capita")) +
       xlab(FALSE) +
